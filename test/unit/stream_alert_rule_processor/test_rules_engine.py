@@ -194,6 +194,13 @@ class TestStreamRules(object):
         def web_server(rec):
             return rec['data']['category'] == 'web-server'
 
+        @rule(logs=['test_log_type_json_nested'],
+              outputs=['s3:sample_bucket'],
+              req_subkeys={'data': ['key_does_not_exist']})
+        def none_data_type(rec):
+            # Should not return true because the value at key 'data' is None
+            return True
+
         kinesis_data_items = [
             {
                 'date': 'Dec 01 2016',
@@ -212,6 +219,12 @@ class TestStreamRules(object):
                 'data': {
                     'location': 'us-west-2'
                 }
+            },
+            {
+                'date': 'Dec 01 2016',
+                'unixtime': '1483139547',
+                'host': 'host1.web.prod.net',
+                'data': None
             }
         ]
 
