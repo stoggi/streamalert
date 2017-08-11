@@ -172,6 +172,9 @@ class StreamRules(object):
             return True
 
         for key, nested_keys in rule.req_subkeys.iteritems():
+            if not isinstance(record[key], dict):
+                # Only check required keys of dictionaries
+                return False
             if not all(x in record[key] for x in nested_keys):
                 return False
 
